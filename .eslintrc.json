@@ -55,15 +55,7 @@
 		"@typescript-eslint/prefer-enum-initializers": "off",
 		"@typescript-eslint/prefer-readonly-parameter-types": "off",
 		"@typescript-eslint/prefer-regexp-exec": "off",
-		"@typescript-eslint/no-magic-numbers": [
-			"error",
-			{
-				"ignoreEnums": true,
-				"ignore": [0],
-				"enforceConst": true,
-				"detectObjects": true
-			}
-		],
+		"@typescript-eslint/no-magic-numbers": "off",
 		"@typescript-eslint/explicit-module-boundary-types": "off",
 		"@typescript-eslint/init-declarations": "off",
 		"@typescript-eslint/no-confusing-void-expression": [
@@ -76,6 +68,13 @@
 		"@typescript-eslint/member-ordering": "off",
 		"@typescript-eslint/prefer-includes": "off",
 		"@typescript-eslint/no-restricted-imports": "off",
+		"@typescript-eslint/no-floating-promises": "off",
+		"@typescript-eslint/ban-ts-comment": [
+			"error",
+			{
+				"ts-nocheck": "allow-with-description"
+			}
+		],
 
 		"import/no-deprecated": "error",
 		"import/order": "off",
@@ -91,6 +90,7 @@
 				]
 			}
 		],
+		"import/prefer-default-export": "off",
 
 		"react/no-did-update-set-state": "off",
 		"react/no-find-dom-node": "off",
@@ -114,22 +114,9 @@
 				"validateNested": true
 			}
 		],
-		"react/function-component-definition": [
-			"error",
-			{
-				"namedComponents": "function-declaration"
-			}
-		],
+		"react/function-component-definition": "off",
 		"react/no-unstable-nested-components": "error",
-		"react/jsx-handler-names": [
-			"error",
-			{
-				"eventHandlerPrefix": "on",
-				"eventHandlerPropPrefix": "on",
-				"checkLocalVariables": true,
-				"checkInlineFunction": true
-			}
-		],
+		"react/jsx-handler-names": "off",
 		"react/jsx-key": "error",
 		"react/jsx-no-bind": [
 			"error",
@@ -144,6 +131,8 @@
 		"react/jsx-no-constructed-context-values": "error",
 		"react/jsx-no-script-url": "error",
 		"react/jsx-no-useless-fragment": "error",
+		"react/require-default-props": "off",
+		"react/jsx-props-no-spreading": "off",
 
 		"unicorn/filename-case": [
 			"error",
@@ -154,7 +143,13 @@
 				}
 			}
 		],
-		"unicorn/no-nested-ternary": ["error"]
+		"unicorn/no-nested-ternary": ["error"],
+		"unicorn/prevent-abbreviations": "off",
+		"unicorn/no-useless-undefined": "off",
+		"unicorn/no-abusive-eslint-disable": "off",
+		"unicorn/no-null": "off",
+		"unicorn/prefer-export-from": "off",
+		"unicorn/no-keyword-prefix": "off"
 	},
 	"settings": {
 		"react": {

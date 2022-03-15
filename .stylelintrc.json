@@ -7,5 +7,6 @@
 				"ignoreAtRules": ["tailwind", "layer"]
 			}
 		]
-	}
+	},
+	"customSyntax": "postcss-less"
 }

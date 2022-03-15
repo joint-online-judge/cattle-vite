@@ -1,27 +1,33 @@
 import App from 'App'
+import { AccessContextProvider } from 'models/access'
+import { AuthContextProvider } from 'models/auth'
+import { DomainContextProvider } from 'models/domain'
+import { LangContextProvider } from 'models/lang'
+import { PageHeaderContextProvider } from 'models/pageHeader'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { BrowserRouter } from 'react-router-dom'
 import { registerSW } from 'virtual:pwa-register'
-import './index.css'
+import './i18n'
+import './index.less'
 
 registerSW()
 
-const MAX_RETRIES = 1
-const queryClient = new QueryClient({
-	defaultOptions: {
-		queries: {
-			staleTime: Number.POSITIVE_INFINITY,
-			retry: MAX_RETRIES
-		}
-	}
-})
-
 ReactDOM.render(
 	<StrictMode>
-		<QueryClientProvider client={queryClient}>
-			<App />
-		</QueryClientProvider>
+		<LangContextProvider>
+			<AuthContextProvider>
+				<AccessContextProvider>
+					<DomainContextProvider>
+						<PageHeaderContextProvider>
+							<BrowserRouter>
+								<App />
+							</BrowserRouter>
+						</PageHeaderContextProvider>
+					</DomainContextProvider>
+				</AccessContextProvider>
+			</AuthContextProvider>
+		</LangContextProvider>
 	</StrictMode>,
 	document.querySelector('#root')
 )

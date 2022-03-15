@@ -1,15 +1,9 @@
-export interface IFruit {
-	name: string
-	image: {
-		author: {
-			name: string
-			url: string
-		}
-		color: string
-		url: string
-	}
-	metadata: {
-		name: string
-		value: string
-	}[]
+export interface ProTablePagination {
+	pageSize?: number
+	current?: number
+}
+
+export interface HorsePagination {
+	offset?: number
+	limit?: number
 }
