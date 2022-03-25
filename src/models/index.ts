@@ -9,6 +9,8 @@ import type { LangContextValue } from './lang'
 import { LangContext } from './lang'
 import type { PageHeaderContextValue } from './pageHeader'
 import { PageHeaderContext } from './pageHeader'
+import type { ProblemSetContextValue } from './problemSet'
+import { ProblemSetContext } from './problemSet'
 
 const useAuth = (): AuthContextValue =>
 	useContext<AuthContextValue>(AuthContext)
@@ -25,4 +27,7 @@ const usePageHeader = (): PageHeaderContextValue =>
 const useLang = (): LangContextValue =>
 	useContext<LangContextValue>(LangContext)
 
-export { useAuth, useDomain, useAccess, usePageHeader, useLang }
+const useProblemSet = (): ProblemSetContextValue =>
+	useContext<ProblemSetContextValue>(ProblemSetContext)
+
+export { useAuth, useDomain, useAccess, usePageHeader, useLang, useProblemSet }

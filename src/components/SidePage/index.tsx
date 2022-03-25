@@ -1,7 +1,7 @@
 import { Col, Row } from 'antd'
 import ShadowCard from 'components/ShadowCard'
-import { VERTICAL_GUTTER } from 'constant'
 import React from 'react'
+import { VERTICAL_GUTTER } from 'utils/constants'
 
 interface IProperties {
 	children: React.ReactNode | React.ReactNode[]

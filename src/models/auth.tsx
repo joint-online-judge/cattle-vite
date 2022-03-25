@@ -1,9 +1,10 @@
 import { useRequest } from 'ahooks'
+import type { AxiosResponse } from 'axios'
 import { ErrorCode } from 'client'
 import jwtDecode from 'jwt-decode'
 import type { FC } from 'react'
 import { createContext, useMemo, useState } from 'react'
-import type { JWTAccessToken } from 'utils/service'
+import type { AuthTokensResp, JWTAccessToken } from 'utils/service'
 import Horse from 'utils/service'
 
 export interface AuthContextValue {
@@ -11,6 +12,7 @@ export interface AuthContextValue {
 	user: JWTAccessToken | undefined // Actually a JWT not a User
 	loading: boolean
 	refresh: () => void
+	refreshAsync?: () => Promise<AxiosResponse<AuthTokensResp>>
 }
 
 const AuthContext = createContext<AuthContextValue>({
@@ -24,13 +26,12 @@ const AuthContextProvider: FC = ({ children }) => {
 	const [user, setUser] = useState<JWTAccessToken>()
 	const [accessToken, setAccessToken] = useState<string>()
 
-	const { loading, refresh } = useRequest(
+	const { loading, refresh, refreshAsync } = useRequest(
 		async () =>
 			Horse.auth.v1GetToken({
 				responseType: 'json'
 			}),
 		{
-			manual: true,
 			onSuccess: res => {
 				if (
 					res.data.errorCode === ErrorCode.Success &&
@@ -59,9 +60,10 @@ const AuthContextProvider: FC = ({ children }) => {
 			user,
 			accessToken,
 			loading,
-			refresh
+			refresh,
+			refreshAsync
 		}),
-		[user, accessToken, loading, refresh]
+		[user, accessToken, loading, refresh, refreshAsync]
 	)
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

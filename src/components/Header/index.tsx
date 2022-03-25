@@ -1,6 +1,6 @@
-import Logo from '@/assets/logo.svg'
 import { MenuOutlined } from '@ant-design/icons'
 import { Button, Col, Menu, Row } from 'antd'
+import Logo from 'assets/logo.svg'
 import type React from 'react'
 import { Link } from 'react-router-dom'
 import style from './style.module.less'

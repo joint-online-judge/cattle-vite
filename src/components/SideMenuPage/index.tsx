@@ -2,22 +2,19 @@ import type { MenuProps } from 'antd'
 import { Col, Row } from 'antd'
 import ShadowCard from 'components/ShadowCard'
 import SideMenuBar from 'components/SideMenuBar'
-import { VERTICAL_GUTTER } from 'constant'
-import { isArray } from 'lodash-es'
+import { isArray, last } from 'lodash-es'
 import type React from 'react'
 import type { ReactElement } from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { Location } from 'react-router-dom'
 import {
-	generatePath,
 	matchRoutes,
 	useLocation,
 	useNavigate,
-	useParams,
 	useSearchParams
 } from 'react-router-dom'
 import routes from 'routes'
-import { joinRoutes } from 'utils'
+import { VERTICAL_GUTTER } from 'utils/constants'
 
 interface IProps {
 	menu: React.ReactElement<MenuProps> // The side menu component (will override all other options)
@@ -39,9 +36,7 @@ const Index: React.FC<IProps> = ({
 	const navigate = useNavigate()
 	const location: Location = useLocation()
 	const matchedRoutes = matchRoutes(routes, location)
-	const params = useParams<{ tab?: string; subTab?: string }>()
 	const [searchParams, setSearchParams] = useSearchParams()
-
 	const [key, setKey] = useState<string>()
 
 	const parseMenuKeyFromUrl = useCallback((): string | undefined => {
@@ -60,8 +55,11 @@ const Index: React.FC<IProps> = ({
 			return subTab ?? tab ?? defaultTab
 		}
 
-		return params.subTab ?? params.tab ?? defaultTab
-	}, [routerMode, searchParams, params, defaultTab])
+		const lastRoute = last(matchedRoutes)
+		return lastRoute && !lastRoute.route.index
+			? lastRoute.route.path
+			: defaultTab
+	}, [routerMode, searchParams, defaultTab, matchedRoutes])
 
 	useEffect(() => {
 		setKey(parseMenuKeyFromUrl())
@@ -75,22 +73,15 @@ const Index: React.FC<IProps> = ({
 	const menuOnClick: MenuProps['onClick'] = useCallback(
 		(event: { key: string; keyPath: string[] }) => {
 			const [newTab, newSubTab] = event.keyPath.reverse()
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-			setKey(newSubTab ?? newTab)
+			setKey(event.key)
 
 			if (routerMode === 'query') {
 				setSearchParams({ tab: newTab, subTab: newSubTab })
-			} else if (matchedRoutes) {
-				navigate(
-					generatePath(joinRoutes(matchedRoutes), {
-						...params,
-						tab: newTab,
-						subTab: newSubTab
-					})
-				)
+			} else if (event.key) {
+				navigate(event.keyPath.join('/'))
 			}
 		},
-		[routerMode, matchedRoutes, params, navigate, setSearchParams]
+		[routerMode, navigate, setSearchParams]
 	)
 
 	const mainContent: ReactElement = useMemo(() => {

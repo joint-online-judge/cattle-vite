@@ -46,7 +46,7 @@ const DomainContextProvider: FC = ({ children }) => {
 	} = useRequest(
 		async (url: string | null | undefined): Promise<DomainResponse> => {
 			if (typeof url === 'string' && url.length > 0) {
-				setDomainUrl(domainUrl)
+				setDomainUrl(url)
 				const res = await Horse.domain.v1GetDomain(url)
 
 				if (res.data.errorCode !== ErrorCode.Success) {

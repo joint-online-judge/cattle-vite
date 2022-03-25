@@ -1,10 +1,10 @@
 import { EditOutlined, MailOutlined, ProfileOutlined } from '@ant-design/icons'
 import { Button, Col, Row, Tooltip } from 'antd'
 import Gravatar from 'components/Gravatar'
-import { VERTICAL_GUTTER } from 'constant'
 import { useAuth } from 'models'
 import type React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { VERTICAL_GUTTER } from 'utils/constants'
 
 const Index: React.FC = () => {
 	const auth = useAuth()

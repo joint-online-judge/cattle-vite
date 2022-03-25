@@ -70,6 +70,7 @@ specifiers:
   react: 17.0.2
   react-copy-to-clipboard: ^5.0.4
   react-dom: 17.0.2
+  react-helmet: ^6.1.0
   react-highlight-words: ^0.17.0
   react-i18next: ^11.15.7
   react-markdown: ^8.0.0
@@ -114,6 +115,7 @@ dependencies:
   react: 17.0.2
   react-copy-to-clipboard: 5.0.4_react@17.0.2
   react-dom: 17.0.2_react@17.0.2
+  react-helmet: 6.1.0_react@17.0.2
   react-highlight-words: 0.17.0_react@17.0.2
   react-i18next: 11.15.7_f94be6b4dd1edc1d8608af374b838bd6
   react-markdown: 8.0.0_00d6772dea80510e818fd171caaa025a
@@ -12556,6 +12558,28 @@ packages:
       react: 17.0.2
     dev: true
 
+  /react-fast-compare/3.2.0:
+    resolution:
+      {
+        integrity: sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA==
+      }
+    dev: false
+
+  /react-helmet/6.1.0_react@17.0.2:
+    resolution:
+      {
+        integrity: sha512-4uMzEY9nlDlgxr61NL3XbKRy1hEkXmKNXhjbAIOVw5vcFrsdYbH2FEwcNyWvWinl103nXgzYNlns9ca+8kFiWw==
+      }
+    peerDependencies:
+      react: '>=16.3.0'
+    dependencies:
+      object-assign: 4.1.1
+      prop-types: 15.8.1
+      react: 17.0.2
+      react-fast-compare: 3.2.0
+      react-side-effect: 2.1.1_react@17.0.2
+    dev: false
+
   /react-highlight-words/0.17.0_react@17.0.2:
     resolution:
       {
@@ -12667,6 +12691,17 @@ packages:
       react: '>=16.8'
     dependencies:
       history: 5.3.0
+      react: 17.0.2
+    dev: false
+
+  /react-side-effect/2.1.1_react@17.0.2:
+    resolution:
+      {
+        integrity: sha512-2FoTQzRNTncBVtnzxFOk2mCpcfxQpenBMbk5kSVBg5UcPqV9fRbgY2zhb7GTWWOlpFmAxhClBDlIq8Rsubz1yQ==
+      }
+    peerDependencies:
+      react: ^16.3.0 || ^17.0.0
+    dependencies:
       react: 17.0.2
     dev: false
 

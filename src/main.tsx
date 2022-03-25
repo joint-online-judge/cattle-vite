@@ -4,6 +4,7 @@ import { AuthContextProvider } from 'models/auth'
 import { DomainContextProvider } from 'models/domain'
 import { LangContextProvider } from 'models/lang'
 import { PageHeaderContextProvider } from 'models/pageHeader'
+import { ProblemSetContextProvider } from 'models/problemSet'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
@@ -17,15 +18,17 @@ ReactDOM.render(
 	<StrictMode>
 		<LangContextProvider>
 			<AuthContextProvider>
-				<AccessContextProvider>
-					<DomainContextProvider>
+				<DomainContextProvider>
+					<AccessContextProvider>
 						<PageHeaderContextProvider>
-							<BrowserRouter>
-								<App />
-							</BrowserRouter>
+							<ProblemSetContextProvider>
+								<BrowserRouter>
+									<App />
+								</BrowserRouter>
+							</ProblemSetContextProvider>
 						</PageHeaderContextProvider>
-					</DomainContextProvider>
-				</AccessContextProvider>
+					</AccessContextProvider>
+				</DomainContextProvider>
 			</AuthContextProvider>
 		</LangContextProvider>
 	</StrictMode>,

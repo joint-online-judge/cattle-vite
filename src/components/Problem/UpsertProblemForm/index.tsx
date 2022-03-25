@@ -6,11 +6,11 @@ import ProForm, {
 import { useRequest } from 'ahooks'
 import { Form, message } from 'antd'
 import MarkdownEditor from 'components/MarkdownEditor'
-import { SUPPORT_PROGRAMMING_LANGUAGE } from 'constant'
 import { useMessage } from 'hooks'
 import type React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import { SUPPORT_PROGRAMMING_LANGUAGE } from 'utils/constants'
 import type { Problem, ProblemCreate, ProblemEdit } from 'utils/service'
 import { ErrorCode, Horse } from 'utils/service'
 

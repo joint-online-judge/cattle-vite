@@ -1,3 +1,4 @@
+import { mapValues } from 'lodash-es'
 import type { FC } from 'react'
 import { createContext, useContext, useMemo } from 'react'
 import { AuthContext } from './auth'
@@ -27,8 +28,8 @@ const AccessContextProvider: FC = ({ children }) => {
 	const { permission } = useContext(DomainContext)
 	const { user } = useContext(AuthContext)
 
-	const value = useMemo(
-		() => ({
+	const value = useMemo(() => {
+		const access = {
 			// Site Permissions
 			authenticated: Boolean(user?.sub && user.category === 'user'),
 			isRoot: user?.role === 'root',
@@ -37,9 +38,15 @@ const AccessContextProvider: FC = ({ children }) => {
 			// Domain Permissions
 			canCreateProblemSet: permission?.problemSet?.create === true,
 			canCreateProblem: permission?.problem?.create === true
-		}),
-		[user, permission]
-	)
+		}
+
+		if (user?.role === 'root') {
+			// Root shall have all permission
+			return mapValues(access, () => true)
+		}
+
+		return access
+	}, [user, permission])
 
 	return (
 		<AccessContext.Provider value={value}>{children}</AccessContext.Provider>

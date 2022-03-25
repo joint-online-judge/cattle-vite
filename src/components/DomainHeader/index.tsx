@@ -7,27 +7,26 @@ import {
 import { Col, Menu, Row, Skeleton } from 'antd'
 import Gravatar from 'components/Gravatar'
 import ShadowCard from 'components/ShadowCard'
-import { MAIN_CONTENT_GRID } from 'constant'
 import { useAccess, useDomain } from 'models'
 import type React from 'react'
 import type { ReactElement } from 'react'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { matchPath } from 'react-router'
 import type { Location } from 'react-router-dom'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, matchPath, useLocation } from 'react-router-dom'
+import { MAIN_CONTENT_GRID } from 'utils/constants'
 import style from './style.module.less'
 
 const matchMenuKey = (location: Location): string => {
-	if (matchPath(location.pathname, { path: '/domain/:domainUrl/settings' })) {
+	if (matchPath('/domain/:domainUrl/settings', location.pathname)) {
 		return 'domain_manage'
 	}
 
-	if (matchPath(location.pathname, { path: '/domain/:domainUrl/problem' })) {
+	if (matchPath('/domain/:domainUrl/problem', location.pathname)) {
 		return 'problem_list'
 	}
 
-	if (matchPath(location.pathname, { path: '/domain' })) {
+	if (matchPath('/domain', location.pathname)) {
 		return 'domain'
 	}
 
