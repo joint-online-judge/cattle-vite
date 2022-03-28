@@ -4,6 +4,6 @@ interface IProps {
 	refresh: () => void
 }
 
-const Index: React.FC<IProps> = () => <h1>Invitation</h1>
+const Index: React.FC<IProps> = () => <h1>SystemTest</h1>
 
 export default Index

@@ -6,15 +6,8 @@ import { Button, Space, Tooltip } from 'antd'
 import ShadowCard from 'components/ShadowCard'
 import type React from 'react'
 import { useEffect, useMemo, useRef } from 'react'
-import {
-	Access,
-	history,
-	Link,
-	useAccess,
-	useIntl,
-	useModel,
-	useParams
-} from 'umi'
+import type { ProTablePagination } from 'types'
+import { Access, history, Link, useIntl, useModel, useParams } from 'umi'
 import { transPagination } from 'utils'
 import type { Problem } from 'utils/service'
 import { Horse } from 'utils/service'

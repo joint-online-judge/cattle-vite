@@ -14,6 +14,7 @@ import type React from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Outlet, useParams } from 'react-router-dom'
+import { NoDomainUrlError, NoProblemSetIdError } from 'utils/exception'
 import AfterDue from './AfterDue'
 import BeforeAvailable from './BeforeAvailable'
 
@@ -27,6 +28,14 @@ const Index: React.FC = () => {
 	const [status, setStatus] = useState<
 		'LOCKED' | 'NOT_STARTED' | 'ONGOING' | 'OVERDUE'
 	>('ONGOING')
+
+	if (!domainUrl) {
+		throw new NoDomainUrlError()
+	}
+
+	if (!problemSetId) {
+		throw new NoProblemSetIdError()
+	}
 
 	const acRate: number = useMemo(() => {
 		if (
@@ -119,20 +128,20 @@ const Index: React.FC = () => {
 			menu={
 				<Menu mode='inline'>
 					<Menu.Item key='detail' icon={<EyeOutlined />}>
-						{intl.formatMessage({ id: 'problem_set.side_menu.detail' })}
+						{t('ProblemSetDetail.menu.detail')}
 					</Menu.Item>
 					<Menu.Item key='scoreboard' icon={<TrophyOutlined />}>
-						{intl.formatMessage({ id: 'problem_set.side_menu.scoreboard' })}
+						{t('ProblemSetDetail.menu.scoreboard')}
 					</Menu.Item>
 					<Menu.Divider />
 					<Menu.Item key='system-test' icon={<CodeOutlined />}>
-						{intl.formatMessage({ id: 'problem_set.side_menu.system_test' })}
+						{t('ProblemSetDetail.menu.systemTest')}
 					</Menu.Item>
 					<Menu.Item key='edit' icon={<EditOutlined />}>
-						{intl.formatMessage({ id: 'problem_set.side_menu.edit' })}
+						{t('ProblemSetDetail.menu.edit')}
 					</Menu.Item>
 					<Menu.Item key='settings' icon={<SettingOutlined />}>
-						{intl.formatMessage({ id: 'problem_set.side_menu.settings' })}
+						{t('ProblemSetDetail.menu.settings')}
 					</Menu.Item>
 				</Menu>
 			}

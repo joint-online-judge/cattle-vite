@@ -1,19 +1,16 @@
 import { EyeInvisibleOutlined } from '@ant-design/icons'
-import type { ActionType, ProColumns } from '@ant-design/pro-table';
+import type { ActionType, ProColumns, RequestData } from '@ant-design/pro-table'
 import ProTable from '@ant-design/pro-table'
 import { useRequest } from 'ahooks'
 import { Button, message, Space, Tooltip } from 'antd'
-import type React from 'react';
+import { useDomain } from 'models'
+import type React from 'react'
 import { useRef } from 'react'
-import { Link, useModel, useParams } from 'umi'
-import type {
-	Problem,
-	ProblemList,
-	ProblemSetAddProblem
-} from 'utils/service';
-import Horse, {
-	ErrorCode
-} from 'utils/service'
+import { Link, useParams } from 'react-router-dom'
+import type { ProTablePagination } from 'types'
+import { NoDomainUrlError, NoProblemSetIdError } from 'utils/exception'
+import type { Problem, ProblemList, ProblemSetAddProblem } from 'utils/service'
+import Horse, { ErrorCode } from 'utils/service'
 
 interface IProps {
 	fetchingProblems: boolean
@@ -28,10 +25,18 @@ const Index: React.FC<IProps> = ({
 	onAddSuccess,
 	problemIdList
 }) => {
-	const { domain } = useModel('domain')
+	const { domain } = useDomain()
 	const { domainUrl, problemSetId } =
 		useParams<{ domainUrl: string; problemSetId: string }>()
 	const ref = useRef<ActionType>()
+
+	if (!domainUrl) {
+		throw new NoDomainUrlError()
+	}
+
+	if (!problemSetId) {
+		throw new NoProblemSetIdError()
+	}
 
 	const { run: addProblem, loading: adding } = useRequest(
 		async (values: ProblemSetAddProblem) => {
@@ -90,7 +95,7 @@ const Index: React.FC<IProps> = ({
 					type='link'
 					disabled={problemIdList.includes(record.id)}
 					key='add'
-					onClick={async () =>
+					onClick={(): void =>
 						addProblem({
 							problem: record.id
 						})
@@ -109,13 +114,13 @@ const Index: React.FC<IProps> = ({
 			actionRef={ref}
 			cardProps={false}
 			columns={columns}
-			request={async (parameters, _sorter, _filter) => {
-				const data = await fetchProblems(parameters)
+			request={async (params): Promise<Partial<RequestData<Problem>>> => {
+				const data = await fetchProblems(params)
 				return {
 					data: data.results,
 					total: data.count,
 					success: true
-				};
+				}
 			}}
 			rowKey='id'
 			pagination={{

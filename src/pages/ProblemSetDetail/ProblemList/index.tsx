@@ -1,7 +1,9 @@
 import { Button, Empty, Space, Table } from 'antd'
 import { isArray } from 'lodash-es'
 import type React from 'react'
-import { history, Link, useIntl, useParams } from 'umi'
+import { useTranslation } from 'react-i18next'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { NoDomainUrlError, NoProblemSetIdError } from 'utils/exception'
 import type { ProblemPreviewWithLatestRecord } from 'utils/service'
 
 interface IProps {
@@ -9,7 +11,8 @@ interface IProps {
 }
 
 const Index: React.FC<IProps> = ({ problems }) => {
-	const intl = useIntl()
+	const { t } = useTranslation()
+	const navigate = useNavigate()
 	const { domainUrl, problemSetId } =
 		useParams<{ problemSetId: string; domainUrl: string }>()
 
@@ -28,18 +31,26 @@ const Index: React.FC<IProps> = ({ problems }) => {
 	//   />
 	// );
 
+	if (!domainUrl) {
+		throw new NoDomainUrlError()
+	}
+
+	if (!problemSetId) {
+		throw new NoProblemSetIdError()
+	}
+
 	const columns = [
 		{
-			title: intl.formatMessage({ id: 'PROBLEM.STATUS' }),
+			title: t('ProblemSetDetail.problem.status'),
 			dataIndex: 'recordState',
 			width: 120,
-			render: (_: any, row: ProblemPreviewWithLatestRecord) =>
+			render: (_: unknown, row: ProblemPreviewWithLatestRecord) =>
 				row.latestRecord?.state
 		},
 		{
-			title: intl.formatMessage({ id: 'PROBLEM' }),
+			title: t('ProblemSetDetail.problem'),
 			dataIndex: 'title',
-			render: (_: any, row: ProblemPreviewWithLatestRecord) => (
+			render: (_: unknown, row: ProblemPreviewWithLatestRecord) => (
 				<Link
 					to={`/domain/${domainUrl}/problem-set/${problemSetId}/p/${
 						row.url ?? row.id
@@ -63,8 +74,8 @@ const Index: React.FC<IProps> = ({ problems }) => {
 			<Space>
 				<Button
 					type='primary'
-					onClick={() => {
-						history.push(
+					onClick={(): void => {
+						navigate(
 							`/domain/${domainUrl}/problem-set/${problemSetId}/settings`
 						)
 					}}

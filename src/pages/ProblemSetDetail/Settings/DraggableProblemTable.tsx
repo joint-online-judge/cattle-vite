@@ -1,10 +1,10 @@
 import { EyeInvisibleOutlined, MenuOutlined } from '@ant-design/icons'
-import type { ProColumns } from '@ant-design/pro-table';
+import type { ProColumns } from '@ant-design/pro-table'
 import ProTable from '@ant-design/pro-table'
 import { arrayMoveImmutable } from '@ant-design/pro-utils'
 import { useRequest } from 'ahooks'
 import { Button, message, Space, Tooltip } from 'antd'
-import type React from 'react';
+import type React from 'react'
 import { useEffect, useState } from 'react'
 import {
 	SortableContainer,
@@ -15,10 +15,8 @@ import { Link, useModel, useParams } from 'umi'
 import type {
 	ProblemPreviewWithLatestRecord,
 	ProblemSetUpdateProblem
-} from 'utils/service';
-import Horse, {
-	ErrorCode
 } from 'utils/service'
+import Horse, { ErrorCode } from 'utils/service'
 import './style.less'
 
 interface IProps {

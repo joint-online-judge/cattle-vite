@@ -1,14 +1,15 @@
 import { Col, Row, Spin, Typography } from 'antd'
 import MarkdownRender from 'components/MarkdownRender'
 import ShadowCard from 'components/ShadowCard'
+import { useProblemSet } from 'models'
 import type React from 'react'
-import { useIntl, useModel } from 'umi'
+import { useTranslation } from 'react-i18next'
 import { VERTICAL_GUTTER } from 'utils/constants'
 import ProblemList from '../ProblemList'
 
 const Index: React.FC = () => {
-	const intl = useIntl()
-	const { problemSet, loading } = useModel('problemSet')
+	const { t } = useTranslation()
+	const { problemSet, loading } = useProblemSet()
 
 	return (
 		<Row gutter={VERTICAL_GUTTER}>
@@ -16,14 +17,12 @@ const Index: React.FC = () => {
 				<Col span={24}>
 					<ShadowCard
 						loading={loading}
-						title={intl.formatMessage({ id: 'PROBLEM_SET.INTRODUCTION' })}
+						title={t('ProblemSetDetail.introduction')}
 					>
 						<Spin spinning={!problemSet}>
-							{problemSet ? (
-								<Typography>
-									<MarkdownRender>{problemSet.content ?? ''}</MarkdownRender>
-								</Typography>
-							) : null}
+							<Typography>
+								<MarkdownRender>{problemSet.content}</MarkdownRender>
+							</Typography>
 						</Spin>
 					</ShadowCard>
 				</Col>
@@ -32,7 +31,7 @@ const Index: React.FC = () => {
 			<Col span={24}>
 				<ShadowCard
 					loading={loading}
-					title={intl.formatMessage({ id: 'PROBLEM' })}
+					title={t('ProblemSetDetail.problem')}
 					bodyStyle={
 						problemSet?.problems && problemSet.problems.length > 0
 							? {
