@@ -75,6 +75,7 @@
 				"ts-nocheck": "allow-with-description"
 			}
 		],
+		"@typescript-eslint/explicit-function-return-type": "off",
 
 		"import/no-deprecated": "error",
 		"import/order": "off",

@@ -2,15 +2,14 @@ import { Empty } from 'antd'
 import MarkdownRender from 'components/MarkdownRender'
 import ShadowCard from 'components/ShadowCard'
 import type React from 'react'
-import { useContext } from 'react'
-import ProblemContext from '../context'
+import { useProblem } from '../context'
 
 const Index: React.FC = () => {
-	const problemContext = useContext(ProblemContext)
+	const problemContext = useProblem()
 
 	return (
 		<ShadowCard title='Problem Description'>
-			{problemContext?.problem?.content ? (
+			{problemContext.problem?.content ? (
 				<MarkdownRender>
 					{problemContext.problem.content || 'No Description'}
 				</MarkdownRender>

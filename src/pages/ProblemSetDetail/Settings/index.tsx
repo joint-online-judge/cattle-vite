@@ -2,10 +2,11 @@ import ProCard from '@ant-design/pro-card'
 import { useRequest } from 'ahooks'
 import { Col, message, Row } from 'antd'
 import ShadowCard from 'components/ShadowCard'
+import { useDomain, usePageHeader } from 'models'
 import type React from 'react'
 import { useEffect, useMemo, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import type { ProTablePagination } from 'types'
-import { useModel, useParams } from 'umi'
 import { transPagination } from 'utils'
 import { VERTICAL_GUTTER } from 'utils/constants'
 import Horse from 'utils/service'
@@ -14,10 +15,20 @@ import DraggableProblemTable from './DraggableProblemTable'
 
 const Index: React.FC = () => {
 	const [tab, setTab] = useState('tab1')
-	const { domain } = useModel('domain')
-	const { setHeader } = useModel('pageHeader')
+	const { domain } = useDomain()
+	const { setHeader } = usePageHeader()
 	const { domainUrl, problemSetId } =
 		useParams<{ domainUrl: string; problemSetId: string }>()
+
+	if (!domainUrl) {
+		// Shall be unreachable under normal conditions
+		throw new Error('No domainUrl found')
+	}
+
+	if (!problemSetId) {
+		// Shall be unreachable under normal conditions
+		throw new Error('No problemSetId found')
+	}
 
 	const {
 		data: problemSet,
@@ -39,7 +50,7 @@ const Index: React.FC = () => {
 	)
 
 	const {
-		run: fetchProblems,
+		runAsync: fetchProblems,
 		refresh: refreshProblems,
 		loading: fetchingProblems
 	} = useRequest(
@@ -94,13 +105,15 @@ const Index: React.FC = () => {
 							bodyStyle={{ padding: 16 }}
 						>
 							<DraggableProblemTable
+								domainUrl={domainUrl}
+								problemSetId={problemSetId}
 								problems={problemSet?.problems ?? []}
 								loading={fetchingProblemSet}
 								onDeleteSuccess={() => {
 									refreshProblemSet()
 									refreshProblems()
 								}}
-								onUpdateFinish={async () => refreshProblemSet()}
+								onUpdateFinish={() => refreshProblemSet()}
 							/>
 						</ProCard>
 						<ProCard

@@ -1,20 +1,24 @@
 import { UpsertProblemForm } from 'components/Problem/UpsertProblemForm'
 import ShadowCard from 'components/ShadowCard'
 import type React from 'react'
-import { useContext } from 'react'
-import { useParams } from 'umi'
-import ProblemContext from '../context'
+import { useParams } from 'react-router-dom'
+import { NoDomainUrlError } from 'utils/exception'
+import { useProblem } from '../context'
 
 const Index: React.FC = () => {
 	const { domainUrl } = useParams<{ domainUrl: string }>()
-	const problemContext = useContext(ProblemContext)
+	const problemContext = useProblem()
+
+	if (!domainUrl) {
+		throw new NoDomainUrlError()
+	}
 
 	return (
 		<ShadowCard>
 			<UpsertProblemForm
 				domainUrl={domainUrl}
-				initialValues={problemContext?.problem}
-				onUpdateSuccess={problemContext?.refresh}
+				initialValues={problemContext.problem}
+				onUpdateSuccess={problemContext.refresh}
 			/>
 		</ShadowCard>
 	)

@@ -10,19 +10,29 @@ import { Descriptions, Menu, message } from 'antd'
 import Gravatar from 'components/Gravatar'
 import ShadowCard from 'components/ShadowCard'
 import SideMenuPage from 'components/SideMenuPage'
+import { useDomain, usePageHeader } from 'models'
 import type React from 'react'
 import { useEffect, useMemo } from 'react'
-import type { IRouteComponentProps } from 'umi'
-import { useIntl, useModel, useParams } from 'umi'
+import { useTranslation } from 'react-i18next'
+import { Outlet, useParams } from 'react-router-dom'
+import { NoDomainUrlError, NoProblemIdError } from 'utils/exception'
 import Horse, { ErrorCode } from 'utils/service'
-import ProblemContext from './context'
+import { ProblemContext } from './context'
 
-const Index: React.FC<IRouteComponentProps> = ({ route, children }) => {
-	const intl = useIntl()
-	const { domain } = useModel('domain')
-	const { setHeader } = useModel('pageHeader')
+const Index: React.FC = () => {
+	const { t } = useTranslation()
+	const { domain } = useDomain()
+	const { setHeader } = usePageHeader()
 	const { domainUrl, problemId } =
 		useParams<{ domainUrl: string; problemId: string }>()
+
+	if (!domainUrl) {
+		throw new NoDomainUrlError()
+	}
+
+	if (!problemId) {
+		throw new NoProblemIdError()
+	}
 
 	const {
 		data: problemResp,
@@ -83,60 +93,56 @@ const Index: React.FC<IRouteComponentProps> = ({ route, children }) => {
 		})
 	}, [breads, setHeader, problemResp])
 
+	const problemContextValue = useMemo(
+		() => ({
+			problem: problemResp?.data,
+			loading: fetchingProblem,
+			refresh
+		}),
+		[problemResp?.data, fetchingProblem, refresh]
+	)
+
 	return (
-		<ProblemContext.Provider
-			value={{
-				problem: problemResp?.data,
-				loading: fetchingProblem,
-				refresh
-			}}
-		>
+		<ProblemContext.Provider value={problemContextValue}>
 			<SideMenuPage
 				defaultTab='detail'
-				route={route}
 				shadowCard={false}
 				menu={
 					<Menu mode='inline'>
 						<Menu.Item key='detail' icon={<ReadOutlined />}>
-							{intl.formatMessage({ id: 'PROBLEM.HOME' })}
+							{t('PROBLEM.HOME')}
 						</Menu.Item>
 						<Menu.Item key='submit' icon={<CodeOutlined />}>
-							{intl.formatMessage({ id: 'PROBLEM.SUBMIT_CODE' })}
+							{t('PROBLEM.SUBMIT_CODE')}
 						</Menu.Item>
 						<Menu.Divider />
 						<Menu.Item key='edit' icon={<EditOutlined />}>
-							{intl.formatMessage({ id: 'PROBLEM.EDIT' })}
+							{t('PROBLEM.EDIT')}
 						</Menu.Item>
 						<Menu.Item key='settings' icon={<SettingOutlined />}>
-							{intl.formatMessage({ id: 'PROBLEM.SETTINGS' })}
+							{t('PROBLEM.SETTINGS')}
 						</Menu.Item>
 					</Menu>
 				}
 				extra={
 					<ShadowCard>
 						<Descriptions column={1}>
-							<Descriptions.Item
-								label={intl.formatMessage({ id: 'PROBLEM.STATUS' })}
-							>
+							<Descriptions.Item label={t('PROBLEM.STATUS')}>
 								{/* todo: make status component */}
 								<CheckOutlined /> Accepted
 							</Descriptions.Item>
-							<Descriptions.Item
-								label={intl.formatMessage({ id: 'PROBLEM.PROBLEM_GROUP' })}
-							>
+							<Descriptions.Item label={t('PROBLEM.PROBLEM_GROUP')}>
 								不知道
 							</Descriptions.Item>
-							<Descriptions.Item
-								label={intl.formatMessage({ id: 'PROBLEM.OWNER' })}
-							>
+							<Descriptions.Item label={t('PROBLEM.OWNER')}>
 								<Gravatar size={20} gravatar={owner?.gravatar} />
-								{owner?.realName ?? owner?.username}
+								{owner?.username}
 							</Descriptions.Item>
 						</Descriptions>
 					</ShadowCard>
 				}
 			>
-				{children}
+				<Outlet />
 			</SideMenuPage>
 		</ProblemContext.Provider>
 	)

@@ -82,7 +82,7 @@ export default defineConfig(({ mode }) => {
 						libName: 'antd',
 						style: (name): string => {
 							if (name === 'col' || name === 'row') {
-								return 'antd/lib/grid/style/index.less'
+								return 'antd/es/grid/style/index.less'
 							}
 							return `antd/es/${name}/style/index.less`
 						}

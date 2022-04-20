@@ -4,25 +4,36 @@ import { useRequest } from 'ahooks'
 import { Button, message } from 'antd'
 import type { UploadFile } from 'antd/lib/upload/interface'
 import ShadowCard from 'components/ShadowCard'
+import { useDomain, usePageHeader } from 'models'
 import type React from 'react'
-import { useContext, useEffect, useMemo, useRef } from 'react'
-import { useIntl, useModel, useParams } from 'umi'
+import { useEffect, useMemo, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useParams } from 'react-router-dom'
+import { NoDomainUrlError, NoProblemIdError } from 'utils/exception'
 import type { FileUpload } from 'utils/service'
 import Horse, { ErrorCode } from 'utils/service'
-import ProblemContext from '../context'
+import { useProblem } from '../context'
 
 interface FormValues {
 	file: UploadFile[]
 }
 
 const Index: React.FC = () => {
-	const intl = useIntl()
-	const { domain } = useModel('domain')
-	const { setHeader } = useModel('pageHeader')
+	const { t } = useTranslation()
+	const { domain } = useDomain()
+	const { setHeader } = usePageHeader()
 	const { domainUrl, problemId } =
 		useParams<{ domainUrl: string; problemId: string }>()
 	const formRef = useRef<ProFormInstance<FormValues>>()
-	const problemContext = useContext(ProblemContext)
+	const problemContext = useProblem()
+
+	if (!domainUrl) {
+		throw new NoDomainUrlError()
+	}
+
+	if (!problemId) {
+		throw new NoProblemIdError()
+	}
 
 	const { run: downloadConfig } = useRequest(
 		async () =>
@@ -39,7 +50,7 @@ const Index: React.FC = () => {
 		}
 	)
 
-	const { run: uploadConfig } = useRequest(
+	const { runAsync: uploadConfig } = useRequest(
 		async (values: FileUpload) => {
 			const res = await Horse.problemConfig.v1UpdateProblemConfigByArchive(
 				problemId,
@@ -94,11 +105,11 @@ const Index: React.FC = () => {
 				breadcrumbI18nKey: 'problem.problems'
 			},
 			{
-				path: problemContext?.problem?.title ?? 'null',
-				breadcrumbName: problemContext?.problem?.title
+				path: problemContext.problem?.title ?? 'null',
+				breadcrumbName: problemContext.problem?.title
 			}
 		],
-		[domainUrl, domain, problemContext?.problem]
+		[domainUrl, domain, problemContext.problem]
 	)
 
 	useEffect(() => {
@@ -128,7 +139,7 @@ const Index: React.FC = () => {
 				<ProFormUploadButton
 					width='md'
 					name='file'
-					label={intl.formatMessage({ id: 'PROBLEM.UPLOAD_FILE' })}
+					label={t('PROBLEM.UPLOAD_FILE')}
 					max={1}
 					fieldProps={{
 						beforeUpload: () => false,

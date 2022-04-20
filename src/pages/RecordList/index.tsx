@@ -3,7 +3,8 @@ import type { TableColumnProps } from 'antd'
 import { Divider, message, Space, Table, Typography } from 'antd'
 import ShadowCard from 'components/ShadowCard'
 import type React from 'react'
-import { Link, useIntl } from 'umi'
+import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 import type { Domain } from 'utils/service'
 import { Horse } from 'utils/service'
 // Import {
@@ -14,7 +15,7 @@ import { Horse } from 'utils/service'
 const { Title } = Typography
 
 const Index: React.FC = () => {
-	const intl = useIntl()
+	const { t } = useTranslation()
 	const { data, loading } = useRequest(
 		async () => {
 			const res = await Horse.domain.v1ListDomains()
@@ -37,7 +38,7 @@ const Index: React.FC = () => {
 			title: 'My Role',
 			dataIndex: 'role',
 			key: 'role',
-			render: (text: string) => text ?? '-'
+			render: (text: string | undefined) => text ?? '-'
 		},
 		// TODO: render role as tags
 		// {
@@ -66,12 +67,8 @@ const Index: React.FC = () => {
 			fixed: 'right',
 			render: (text, record) => (
 				<Space split={<Divider type='vertical' />}>
-					<Link to={`/domain/${record.url ?? ''}`}>
-						{intl.formatMessage({ id: 'VISIT' })}
-					</Link>
-					<Link to={`/domain/${record.url ?? ''}/settings`}>
-						{intl.formatMessage({ id: 'MANAGE' })}
-					</Link>
+					<Link to={`/domain/${record.url ?? ''}`}>{t('VISIT')}</Link>
+					<Link to={`/domain/${record.url ?? ''}/settings`}>{t('MANAGE')}</Link>
 				</Space>
 			)
 		}
@@ -79,7 +76,7 @@ const Index: React.FC = () => {
 
 	return (
 		<ShadowCard style={{ marginTop: 24 }}>
-			<Title level={3}>{intl.formatMessage({ id: 'DOMAIN.DOMAINS' })}</Title>
+			<Title level={3}>{t('DOMAIN.DOMAINS')}</Title>
 			<Table
 				columns={columns}
 				dataSource={data ?? []}

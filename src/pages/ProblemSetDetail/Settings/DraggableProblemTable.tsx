@@ -4,42 +4,48 @@ import ProTable from '@ant-design/pro-table'
 import { arrayMoveImmutable } from '@ant-design/pro-utils'
 import { useRequest } from 'ahooks'
 import { Button, message, Space, Tooltip } from 'antd'
+import { useDomain } from 'models'
 import type React from 'react'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import {
 	SortableContainer,
 	SortableElement,
 	SortableHandle
 } from 'react-sortable-hoc'
-import { Link, useModel, useParams } from 'umi'
 import type {
 	ProblemPreviewWithLatestRecord,
 	ProblemSetUpdateProblem
 } from 'utils/service'
 import Horse, { ErrorCode } from 'utils/service'
-import './style.less'
+import './style.module.less'
 
 interface IProps {
+	domainUrl: string
+	problemSetId: string
 	problems: ProblemPreviewWithLatestRecord[]
 	loading: boolean
 	onUpdateFinish: () => void
 	onDeleteSuccess: () => void
 }
 
-// eslint-disable-next-line new-cap
 const DragHandle = SortableHandle(() => (
 	<MenuOutlined style={{ cursor: 'grab', color: '#999' }} />
 ))
+// eslint-disable-next-line
+const SortableItem = SortableElement((props: any) => <tr {...props} />)
+// eslint-disable-next-line
+const SortContainer = SortableContainer((props: any) => <tbody {...props} />)
 
 const Index: React.FC<IProps> = ({
+	domainUrl,
+	problemSetId,
 	problems,
 	loading,
 	onUpdateFinish,
 	onDeleteSuccess
 }) => {
-	const { domain } = useModel('domain')
-	const { domainUrl, problemSetId } =
-		useParams<{ domainUrl: string; problemSetId: string }>()
+	const { domain } = useDomain()
 	const [dataSource, setDataSource] =
 		useState<ProblemPreviewWithLatestRecord[]>(problems)
 
@@ -96,91 +102,94 @@ const Index: React.FC<IProps> = ({
 		}
 	)
 
-	const columns: ProColumns<ProblemPreviewWithLatestRecord>[] = [
-		{
-			title: '排序',
-			dataIndex: 'sort',
-			width: 60,
-			className: 'drag-visible',
-			render: () => <DragHandle />
-		},
-		{
-			title: 'Title',
-			key: 'title',
-			dataIndex: 'title',
-			render: (_, record) => (
-				<Space>
-					<Link
-						to={`/domain/${domain?.url ?? ''}/problem/${
-							record.url ?? record.id
-						}`}
+	const columns: ProColumns<ProblemPreviewWithLatestRecord>[] = useMemo(
+		() => [
+			{
+				title: '排序',
+				dataIndex: 'sort',
+				width: 60,
+				className: 'drag-visible',
+				render: () => <DragHandle />
+			},
+			{
+				title: 'Title',
+				key: 'title',
+				dataIndex: 'title',
+				render: (_, record) => (
+					<Space>
+						<Link
+							to={`/domain/${domain?.url ?? ''}/problem/${
+								record.url ?? record.id
+							}`}
+						>
+							{record.title}
+						</Link>
+						{record.hidden ? (
+							<Tooltip title='This problem is invisible to normal users.'>
+								<EyeInvisibleOutlined />
+							</Tooltip>
+						) : null}
+					</Space>
+				)
+			},
+			{
+				title: 'Option',
+				key: 'option',
+				width: 80,
+				valueType: 'option',
+				render: (_, record) => [
+					<Button
+						type='link'
+						key='remove'
+						onClick={() => removeProblem(record.id)}
 					>
-						{record.title}
-					</Link>
-					{record.hidden ? (
-						<Tooltip title='This problem is invisible to normal users.'>
-							<EyeInvisibleOutlined />
-						</Tooltip>
-					) : null}
-				</Space>
-			)
-		},
-		{
-			title: 'Option',
-			key: 'option',
-			width: 80,
-			valueType: 'option',
-			render: (_, record) => [
-				<Button
-					type='link'
-					key='remove'
-					onClick={async () => removeProblem(record.id)}
-				>
-					移除
-				</Button>
-			]
-		}
-	]
-
-	// eslint-disable-next-line new-cap
-	const SortableItem = SortableElement((props: any) => <tr {...props} />)
-	// eslint-disable-next-line new-cap
-	const SortContainer = SortableContainer((props: any) => <tbody {...props} />)
-
-	const onSortEnd = ({
-		oldIndex,
-		newIndex
-	}: {
-		oldIndex: number
-		newIndex: number
-	}) => {
-		if (oldIndex !== newIndex) {
-			const newData = arrayMoveImmutable(
-				[...dataSource],
-				oldIndex,
-				newIndex
-			).filter(element => Boolean(element))
-			setDataSource([...newData])
-			if (dataSource[oldIndex]?.id) {
-				updateProblem(dataSource[oldIndex].id, { position: newIndex })
+						移除
+					</Button>
+				]
 			}
-		}
-	}
-
-	const DraggableContainer = (props: any) => (
-		<SortContainer
-			useDragHandle
-			disableAutoscroll
-			helperClass='row-dragging'
-			onSortEnd={onSortEnd}
-			{...props}
-		/>
+		],
+		[domain?.url, removeProblem]
 	)
 
-	const DraggableBodyRow = (props: any) => {
-		const index = dataSource.findIndex(x => x.id === props['data-row-key'])
-		return <SortableItem index={index} {...props} />
-	}
+	const onSortEnd = useCallback(
+		({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
+			if (oldIndex !== newIndex) {
+				const newData = arrayMoveImmutable(
+					[...dataSource],
+					oldIndex,
+					newIndex
+				).filter(element => Boolean(element))
+				setDataSource([...newData])
+				if (dataSource[oldIndex]?.id) {
+					updateProblem(dataSource[oldIndex].id, { position: newIndex })
+				}
+			}
+		},
+		[dataSource, updateProblem]
+	)
+
+	const DraggableContainer: React.FC = useCallback(
+		props => (
+			<SortContainer
+				useDragHandle
+				disableAutoscroll
+				helperClass='row-dragging'
+				onSortEnd={onSortEnd}
+				{...props}
+			/>
+		),
+		[onSortEnd]
+	)
+
+	const DraggableBodyRow: React.FC = useCallback(
+		props => {
+			// @ts-expect-error implicit props
+			// eslint-disable-next-line
+			const index = dataSource.findIndex(x => x.id === props['data-row-key'])
+			return <SortableItem index={index} {...props} />
+		},
+		[dataSource]
+	)
 
 	useEffect(() => {
 		setDataSource(problems)

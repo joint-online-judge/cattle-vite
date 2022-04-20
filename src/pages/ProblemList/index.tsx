@@ -4,23 +4,31 @@ import ProTable from '@ant-design/pro-table'
 import { useRequest } from 'ahooks'
 import { Button, Space, Tooltip } from 'antd'
 import ShadowCard from 'components/ShadowCard'
+import { useAccess, useDomain, usePageHeader } from 'models'
 import type React from 'react'
 import { useEffect, useMemo, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import type { ProTablePagination } from 'types'
-import { Access, history, Link, useIntl, useModel, useParams } from 'umi'
 import { transPagination } from 'utils'
 import type { Problem } from 'utils/service'
 import { Horse } from 'utils/service'
 
 const Index: React.FC = () => {
-	const intl = useIntl()
+	const { t } = useTranslation()
 	const access = useAccess()
 	const { domainUrl } = useParams<{ domainUrl: string }>()
-	const { domain } = useModel('domain')
-	const { setHeader } = useModel('pageHeader')
+	const { domain } = useDomain()
+	const { setHeader } = usePageHeader()
 	const ref = useRef<ActionType>()
+	const navigate = useNavigate()
 
-	const { run: fetchProblems, loading: fetching } = useRequest(
+	if (!domainUrl) {
+		// Shall be unreachable under normal conditions
+		throw new Error('No domainUrl found')
+	}
+
+	const { runAsync: fetchProblems, loading: fetching } = useRequest(
 		async (parameters: ProTablePagination) => {
 			const res = await Horse.problem.v1ListProblems(
 				domainUrl,
@@ -90,17 +98,17 @@ const Index: React.FC = () => {
 	return (
 		<ShadowCard
 			extra={
-				<Access accessible={access.canCreateProblem}>
+				access.canCreateProblem ? (
 					<Button
 						icon={<PlusOutlined />}
 						onClick={() => {
-							history.push(`/domain/${domainUrl}/create-problem`)
+							navigate(`/domain/${domainUrl}/create-problem`)
 						}}
 						type='primary'
 					>
-						{intl.formatMessage({ id: 'PROBLEM.CREATE.TITLE' })}
+						{t('PROBLEM.CREATE.TITLE')}
 					</Button>
-				</Access>
+				) : null
 			}
 		>
 			<ProTable<Problem>
@@ -109,7 +117,7 @@ const Index: React.FC = () => {
 				actionRef={ref}
 				cardProps={false}
 				columns={columns}
-				request={async (parameters, _sorter, _filter) => {
+				request={async parameters => {
 					const data = await fetchProblems(parameters)
 					return {
 						data: data.results,

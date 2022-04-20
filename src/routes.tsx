@@ -37,8 +37,42 @@ const DomainSettingsPermissionConfig = lazy(
 const DomainSettingsPermissionRole = lazy(
 	async () => import('pages/DomainSettings/Permission/Role')
 )
+
 const ProblemSetList = lazy(async () => import('pages/ProblemSetList'))
 const ProblemSetDetail = lazy(async () => import('pages/ProblemSetDetail'))
+const ProblemSetDetailView = lazy(
+	async () => import('pages/ProblemSetDetail/ViewDetail')
+)
+const ProblemSetDetailScoreboard = lazy(
+	async () => import('pages/ProblemSetDetail/Scoreboard')
+)
+const ProblemSetDetailSystemTest = lazy(
+	async () => import('pages/ProblemSetDetail/SystemTest')
+)
+const ProblemSetDetailEditDetail = lazy(
+	async () => import('pages/ProblemSetDetail/EditDetail')
+)
+const ProblemSetDetailSettings = lazy(
+	async () => import('pages/ProblemSetDetail/Settings')
+)
+
+const ProblemList = lazy(async () => import('pages/ProblemList'))
+const ProblemDetail = {
+	Index: lazy(async () => import('pages/ProblemDetail')),
+	Detail: lazy(async () => import('pages/ProblemDetail/Detail')),
+	Submit: lazy(async () => import('pages/ProblemDetail/Submit')),
+	Edit: lazy(async () => import('pages/ProblemDetail/Edit')),
+	Settings: lazy(async () => import('pages/ProblemDetail/Settings'))
+}
+
+const Profile = lazy(async () => import('pages/Profile'))
+
+const SiteAdmin = {
+	Index: lazy(async () => import('pages/SiteAdmin')),
+	CreateDomain: lazy(async () => import('pages/SiteAdmin/CreateDomain'))
+}
+
+const RecordList = lazy(async () => import('pages/RecordList'))
 
 const NotFound = lazy(async () => import('pages/NotFound'))
 
@@ -167,23 +201,23 @@ const children: RouteObject[] = [
 											},
 											{
 												path: 'scoreboard',
-												element: '@/pages/ProblemSetDetail/Scoreboard'
+												element: <ProblemSetDetailScoreboard />
 											},
 											{
 												path: 'system-test',
-												element: '@/pages/ProblemSetDetail/SystemTest'
+												element: <ProblemSetDetailSystemTest />
 											},
 											{
 												path: 'settings',
-												element: '@/pages/ProblemSetDetail/Settings'
+												element: <ProblemSetDetailSettings />
 											},
 											{
 												path: 'edit',
-												element: '@/pages/ProblemSetDetail/EditDetail'
+												element: <ProblemSetDetailEditDetail />
 											},
 											{
 												path: 'detail',
-												element: '@/pages/ProblemSetDetail/ViewDetail'
+												element: <ProblemSetDetailView />
 											}
 										]
 									}
@@ -194,10 +228,11 @@ const children: RouteObject[] = [
 								children: [
 									{
 										index: true,
-										element: '@/pages/ProblemList'
+										element: <ProblemList />
 									},
 									{
 										path: ':problemId',
+										element: <ProblemDetail.Index />,
 										children: [
 											{
 												index: true,
@@ -205,19 +240,19 @@ const children: RouteObject[] = [
 											},
 											{
 												path: 'detail',
-												element: '@/pages/ProblemDetail/Detail'
+												element: <ProblemDetail.Detail />
 											},
 											{
 												path: 'submit',
-												element: '@/pages/ProblemDetail/Submit'
+												element: <ProblemDetail.Submit />
 											},
 											{
 												path: 'edit',
-												element: '@/pages/ProblemDetail/Edit'
+												element: <ProblemDetail.Edit />
 											},
 											{
 												path: 'settings',
-												element: '@/pages/ProblemDetail/Settings'
+												element: <ProblemDetail.Settings />
 											}
 										]
 									}
@@ -233,11 +268,11 @@ const children: RouteObject[] = [
 			},
 			{
 				path: 'user/:username',
-				element: '@/pages/Profile'
+				element: <Profile />
 			},
 			{
 				path: 'admin',
-				element: '@/pages/SiteAdmin',
+				element: <SiteAdmin.Index />,
 				children: [
 					{
 						index: true,
@@ -245,13 +280,13 @@ const children: RouteObject[] = [
 					},
 					{
 						path: 'domain',
-						element: '@/pages/SiteAdmin/CreateDomain'
+						element: <SiteAdmin.CreateDomain />
 					}
 				]
 			},
 			{
 				path: 'records',
-				element: '@/pages/RecordList'
+				element: <RecordList />
 			}
 		]
 	},

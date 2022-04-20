@@ -1,11 +1,11 @@
 import { Col, Row } from 'antd'
 import UpsertDomainForm from 'components/Domain/UpsertDomainForm'
+import { usePageHeader } from 'models'
 import type React from 'react'
 import { useEffect, useMemo } from 'react'
-import { useModel } from 'umi'
 
 const Index: React.FC = () => {
-	const { setHeader } = useModel('pageHeader')
+	const { setHeader } = usePageHeader()
 
 	const breads = useMemo(
 		() => [
