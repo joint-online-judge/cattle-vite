@@ -10,51 +10,36 @@ const MainLayout = lazy(async () => import('layouts/index'))
 const DomainLayout = lazy(async () => import('layouts/DomainLayout'))
 
 const DomainList = lazy(async () => import('pages/DomainList'))
-const UserSettings = lazy(async () => import('pages/UserSettings'))
-const UserSettingsGeneral = lazy(
-	async () => import('pages/UserSettings/General')
-)
-const UserSettingsAccount = lazy(
-	async () => import('pages/UserSettings/Account')
-)
+const UserSettings = {
+	Index: lazy(async () => import('pages/UserSettings')),
+	General: lazy(async () => import('pages/UserSettings/General')),
+	Account: lazy(async () => import('pages/UserSettings/Account'))
+}
+
 const DomainHome = lazy(async () => import('pages/DomainHome'))
 const CreateProblemSet = lazy(async () => import('pages/CreateProblemSet'))
 const CreateProblem = lazy(async () => import('pages/CreateProblem'))
 const JoinDomain = lazy(async () => import('pages/JoinDomain'))
-const DomainSettings = lazy(async () => import('pages/DomainSettings'))
-const DomainSettingsProfile = lazy(
-	async () => import('pages/DomainSettings/Profile')
-)
-const DomainSettingsMember = lazy(
-	async () => import('pages/DomainSettings/Member')
-)
-const DomainSettingsInvitation = lazy(
-	async () => import('pages/DomainSettings/Invitation')
-)
-const DomainSettingsPermissionConfig = lazy(
-	async () => import('pages/DomainSettings/Permission/Config')
-)
-const DomainSettingsPermissionRole = lazy(
-	async () => import('pages/DomainSettings/Permission/Role')
-)
+const DomainSettings = {
+	Index: lazy(async () => import('pages/DomainSettings')),
+	Profile: lazy(async () => import('pages/DomainSettings/Profile')),
+	Member: lazy(async () => import('pages/DomainSettings/Member')),
+	Invitation: lazy(async () => import('pages/DomainSettings/Invitation')),
+	Permission: {
+		Config: lazy(async () => import('pages/DomainSettings/Permission/Config')),
+		Role: lazy(async () => import('pages/DomainSettings/Permission/Role'))
+	}
+}
 
 const ProblemSetList = lazy(async () => import('pages/ProblemSetList'))
-const ProblemSetDetail = lazy(async () => import('pages/ProblemSetDetail'))
-const ProblemSetDetailView = lazy(
-	async () => import('pages/ProblemSetDetail/ViewDetail')
-)
-const ProblemSetDetailScoreboard = lazy(
-	async () => import('pages/ProblemSetDetail/Scoreboard')
-)
-const ProblemSetDetailSystemTest = lazy(
-	async () => import('pages/ProblemSetDetail/SystemTest')
-)
-const ProblemSetDetailEditDetail = lazy(
-	async () => import('pages/ProblemSetDetail/EditDetail')
-)
-const ProblemSetDetailSettings = lazy(
-	async () => import('pages/ProblemSetDetail/Settings')
-)
+const ProblemSetDetail = {
+	Index: lazy(async () => import('pages/ProblemSetDetail')),
+	ViewDetail: lazy(async () => import('pages/ProblemSetDetail/ViewDetail')),
+	Scoreboard: lazy(async () => import('pages/ProblemSetDetail/Scoreboard')),
+	SystemTest: lazy(async () => import('pages/ProblemSetDetail/SystemTest')),
+	EditDetail: lazy(async () => import('pages/ProblemSetDetail/EditDetail')),
+	Settings: lazy(async () => import('pages/ProblemSetDetail/Settings'))
+}
 
 const ProblemList = lazy(async () => import('pages/ProblemList'))
 const ProblemDetail = {
@@ -97,7 +82,7 @@ const children: RouteObject[] = [
 
 			{
 				path: 'settings',
-				element: <UserSettings />,
+				element: <UserSettings.Index />,
 				children: [
 					{
 						index: true,
@@ -105,15 +90,15 @@ const children: RouteObject[] = [
 					},
 					{
 						path: 'general',
-						element: <UserSettingsGeneral />
+						element: <UserSettings.General />
 					},
 					{
 						path: 'account',
-						element: <UserSettingsAccount />
+						element: <UserSettings.Account />
 					},
 					{
 						path: 'domains',
-						element: <UserSettingsGeneral />
+						element: <UserSettings.General />
 					}
 				]
 			},
@@ -147,7 +132,7 @@ const children: RouteObject[] = [
 							},
 							{
 								path: 'settings',
-								element: <DomainSettings />,
+								element: <DomainSettings.Index />,
 								children: [
 									{
 										index: true,
@@ -155,15 +140,15 @@ const children: RouteObject[] = [
 									},
 									{
 										path: 'profile',
-										element: <DomainSettingsProfile />
+										element: <DomainSettings.Profile />
 									},
 									{
 										path: 'invitation',
-										element: <DomainSettingsInvitation />
+										element: <DomainSettings.Invitation />
 									},
 									{
 										path: 'member',
-										element: <DomainSettingsMember />
+										element: <DomainSettings.Member />
 									},
 									{
 										path: 'permission',
@@ -174,11 +159,11 @@ const children: RouteObject[] = [
 											},
 											{
 												path: 'config',
-												element: <DomainSettingsPermissionConfig />
+												element: <DomainSettings.Permission.Config />
 											},
 											{
 												path: 'role',
-												element: <DomainSettingsPermissionRole />
+												element: <DomainSettings.Permission.Role />
 											}
 										]
 									}
@@ -193,7 +178,7 @@ const children: RouteObject[] = [
 									},
 									{
 										path: ':problemSetId',
-										element: <ProblemSetDetail />,
+										element: <ProblemSetDetail.Index />,
 										children: [
 											{
 												index: true,
@@ -201,23 +186,23 @@ const children: RouteObject[] = [
 											},
 											{
 												path: 'scoreboard',
-												element: <ProblemSetDetailScoreboard />
+												element: <ProblemSetDetail.Scoreboard />
 											},
 											{
 												path: 'system-test',
-												element: <ProblemSetDetailSystemTest />
+												element: <ProblemSetDetail.SystemTest />
 											},
 											{
 												path: 'settings',
-												element: <ProblemSetDetailSettings />
+												element: <ProblemSetDetail.Settings />
 											},
 											{
 												path: 'edit',
-												element: <ProblemSetDetailEditDetail />
+												element: <ProblemSetDetail.EditDetail />
 											},
 											{
 												path: 'detail',
-												element: <ProblemSetDetailView />
+												element: <ProblemSetDetail.ViewDetail />
 											}
 										]
 									}
